@@ -1,19 +1,22 @@
 ## TypeScript
 
-1. TypeScript Basic
-2. Compiler & Configuration Deep
-3. Next-gen JS Code
-4. Classes & Interfaces
-5. Advanced Types & TypeScript Features
-6. Generics
-7. Decorators
-8. Practice - project
-9. Namespaces & modules
-10. Webpack & TypeScript
-11. Third-Party Libraries
-12. React + TS & NodeJS + TS
+[1. Basic](#basic)<br/>
+[2. Compiler](#compiler)<br/>
+
+<!-- 2. Next-gen JS Code
+3. Classes & Interfaces
+4. Advanced Types & TypeScript Features
+5. Generics
+6. Decorators
+7. Practice - project
+8. Namespaces & modules
+9. Webpack & TypeScript
+10. Third-Party Libraries
+11. React + TS & NodeJS + TS -->
 
 ---
+
+# <a name="basic"></a>1. TypeScript Basic
 
 ## Use
 
@@ -32,6 +35,14 @@ $ npm install --save-dev lite-server
 
 ```bash
 $ npm start
+```
+
+```json
+// package.json
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "lite-server"
+  },
 ```
 
 <br>
@@ -79,3 +90,77 @@ function isOlder(user: User, checkAge: number) {
   return checkAge > user.age;
 }
 ```
+
+<br>
+
+---
+
+# <a name="compiler"></a>2. Compiler
+
+### Using "Watch Mode"
+
+```bash
+$ npm start
+
+$ tsc app.ts --watch
+# or
+$ tsc app.ts -w
+```
+
+이건 한가지 파일만 가능함
+
+<br>
+
+### Compiling the Entire Project / Multiple Files
+
+```bash
+$ tsc --init
+# Successfully created a tsconfig.json file.
+
+$ tsc
+# 모든 ts 파일의 js 파일 생김
+
+$ tsc --watch
+```
+
+### Exclude
+
+```json
+// tsconfing.json
+//...
+"exclude": [
+    "analytics.ts"
+  ]
+}
+```
+
+`tsc` 실행시 exclude한 파일은 js생기지않음
+
+### Include
+
+include에 포함한것만 컴파일
+
+```json
+ex)
+ "include": [
+    "app.ts",
+    "analytics.ts"
+  ]
+```
+
+### outDir
+
+```json
+  "outDir": "./",
+```
+
+- where created files should be stored
+  - ex) `"outDir": "./dist",`
+
+### noEmitOnError
+
+```json
+ "noEmitOnError": true,
+```
+
+에러가 있으면 js파일 생성안됨
