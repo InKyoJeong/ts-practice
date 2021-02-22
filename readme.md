@@ -3,9 +3,9 @@
 [1. Basic](#basic)<br/>
 [2. Compiler](#compiler)<br/>3. Next-gen js<br/>
 [4. Classes & Interfaces](#classes)<br/>
+[5. Advanced Types](#advancedtypes)<br/>
 
-<!-- 5. Advanced Types & TypeScript Features
-6. Generics
+<!-- 6. Generics
 7. Decorators
 8. Practice - project
 9. Namespaces & modules
@@ -320,4 +320,84 @@ class Cat extends Animal {
 new Animal(); // Error - TS2511: Cannot create an instance of an abstract class.
 const cat = new Cat("Lucy");
 console.log(cat.getName()); // Lucy
+```
+
+<br>
+
+## 인터페이스 (interface)
+
+- 타입스크립트 여러 객체를 정의하는 일종의 규칙이며 구조
+
+### 함수 타입
+
+```ts
+//type AddFn = (a: number, b: number) => number;
+interface AddFn {
+  (a: number, b: number): number;
+}
+let add: AddFn;
+
+add = (n1: number, n2: number) => {
+  return n1 + n2;
+};
+```
+
+<br>
+
+---
+
+# 5. <a name="advancedtypes"></a>Advanced Types
+
+## 인터섹션(intersection)
+
+- `&`(ampersand)를 사용해 2개 이상의 타입을 조합
+
+## 오버로드(Overloads)
+
+- 이름은 같지만 매개변수 타입과 반환 타입이 다른 여러 함수를 가질 수 있는 것
+
+```ts
+function add(a: number, b: number): number;
+function add(a: string, b: string): string;
+function add(a: string, b: number): string;
+function add(a: number, b: string): string;
+function add(a: Combinable, b: Combinable) {
+  if (typeof a === "string" || typeof b === "string") {
+    return a.toString() + b.toString();
+  }
+  return a + b;
+}
+
+const result = add("Max", " Schawa");
+```
+
+<br>
+
+## Nullish 병합 (Nullish Coalescing)
+
+> 널 병합 연산자 `??` 는 왼쪽 피연산자가 `null` 또는 `undefined`일 때 오른쪽 피연산자를 반환하고, 그렇지 않으면 왼쪽 피연산자를 반환
+
+- 일반적으로 논리 연산자 `||`를 사용해 Falsy 체크(`0, "", NaN, null, undefined`를 확인)
+- 여기서 `0`이나 `""` 값을 유효 값으로 사용하는 경우 원치 않는 결과가 발생할 수 있음
+  - 이럴 때 Nullish 병합 연산자 `??`를 타입스크립트에서 사용
+
+```ts
+const userInput = "";
+const storedData = userInput || "DEFAULT";
+
+console.log(storedData); //DEFAULT
+```
+
+```ts
+const userInput = "";
+const storedData = userInput ?? "DEFAULT";
+
+console.log(storedData); // (아무것도출력되지않음)
+```
+
+```ts
+const userInput = undefined;
+const storedData = userInput ?? "DEFAULT";
+
+console.log(storedData); // DEFAULT
 ```
