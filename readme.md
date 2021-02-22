@@ -4,9 +4,9 @@
 [2. Compiler](#compiler)<br/>3. Next-gen js<br/>
 [4. Classes & Interfaces](#classes)<br/>
 [5. Advanced Types](#advancedtypes)<br/>
+[6. Generics](#generics)<br/>
 
-<!-- 6. Generics
-7. Decorators
+<!-- 7. Decorators
 8. Practice - project
 9. Namespaces & modules
 10. Webpack & TypeScript
@@ -400,4 +400,163 @@ const userInput = undefined;
 const storedData = userInput ?? "DEFAULT";
 
 console.log(storedData); // DEFAULT
+```
+
+<br>
+
+---
+
+# <a name="generics"></a>6. Generics
+
+## 제네릭
+
+- 재사용을 목적으로 함수나 클래스의 선언 시점이 아닌, 사용 시점에 타입을 선언
+- 함수 이름 우측에 `<T>`를 작성
+  - `T`는 타입 변수(Type variable)로 사용자가 제공한 타입으로 변환될 식별자
+
+```ts
+function toArray<T>(a: T, b: T): T[] {
+  return [a, b];
+}
+
+toArray<number>(1, 2);
+toArray<string>("1", "2");
+toArray<string | number>(1, "2");
+toArray<number>(1, "2"); // Error
+```
+
+- 타입 추론을 활용해, 사용 시점에 타입을 제공하지 않을 수 있음
+
+```ts
+function toArray<T>(a: T, b: T): T[] {
+  return [a, b];
+}
+
+toArray(1, 2);
+toArray("1", "2");
+toArray(1, "2"); // Error
+```
+
+<br>
+
+## 제약 조건(Constraints)
+
+- `extends` 키워드를 사용하는 제약 조건을 추가할 수 있음
+
+```ts
+// 별도의 제약 조건(Constraints)이 없어서 모든 타입이 허용
+interface MyType<T> {
+  name: string;
+  value: T;
+}
+
+const dataA: MyType<string> = {
+  name: "Data A",
+  value: "Hello world",
+};
+const dataB: MyType<number> = {
+  name: "Data B",
+  value: 1234,
+};
+const dataC: MyType<boolean> = {
+  name: "Data C",
+  value: true,
+};
+const dataD: MyType<number[]> = {
+  name: "Data D",
+  value: [1, 2, 3, 4],
+};
+```
+
+```ts
+// 제약 조건 추가 : 타입 변수 T가 string과 number인 경우만 허용
+interface MyType<T extends string | number> {
+  name: string;
+  value: T;
+}
+
+const dataA: MyType<string> = {
+  name: "Data A",
+  value: "Hello world",
+};
+const dataB: MyType<number> = {
+  name: "Data B",
+  value: 1234,
+};
+const dataC: MyType<boolean> = {
+  // TS2344: Type 'boolean' does not satisfy the constraint 'string | number'.
+  name: "Data C",
+  value: true,
+};
+const dataD: MyType<number[]> = {
+  // TS2344: Type 'number[]' does not satisfy the constraint 'string | number'.
+  name: "Data D",
+  value: [1, 2, 3, 4],
+};
+```
+
+<br>
+
+## Utility Types
+
+### Partial
+
+- `TYPE`의 모든 속성을 선택적(`?`)으로 변경한 새로운 타입을 반환
+
+```ts
+interface IUser {
+  name: string;
+  age: number;
+}
+
+const userA: IUser = {
+  // TS2741: Property 'age' is missing in type '{ name: string; }' but required in type 'IUser'.
+  name: "A",
+};
+const userB: Partial<IUser> = {
+  name: "B",
+};
+```
+
+위 예제의 `Partial<IUser>`은 다음과 같음
+
+```ts
+interface INewType {
+  name?: string;
+  age?: number;
+}
+```
+
+<br>
+
+### Readonly
+
+- `TYPE`의 모든 속성을 읽기 전용(`readonly`)으로 변경한 새로운 타입을 반환
+
+```ts
+interface IUser {
+  name: string;
+  age: number;
+}
+
+const userA: IUser = {
+  name: "A",
+  age: 12,
+};
+userA.name = "AA";
+
+const userB: Readonly<IUser> = {
+  name: "B",
+  age: 13,
+};
+userB.name = "BB"; // TS2540: Cannot assign to 'name' because it is a read-only property.
+```
+
+위의 `Readonly<IUser>`는 다음과 같음
+
+```ts
+interface INewType {
+  readonly name: string;
+  readonly age: number;
+}
 ```
